@@ -1,0 +1,33 @@
+# Environment Variables & Secrets (CRITICAL: NEVER COMMIT)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+
+# Node dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Production build artifacts
+dist/
+build/
+coverage/
+
+# Logs
+logs/
+*.log
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# IDE and Editor configurations
+.vscode/
+.idea/
+*.swp
+*.swo
