@@ -6,7 +6,7 @@
 
 const dbName = process.env.MONGO_DATABASE || 'taskdb';
 const appUser = process.env.MONGO_USER || 'appuser';
-const appPassword = process.env.MONGO_PASSWORD || 'appPassword123!';
+const appPassword = process.env.MONGO_PASSWORD || 'appSecurePass75_2026';
 
 const appDb = db.getSiblingDB(dbName);
 

@@ -1,12 +1,30 @@
 const mongoose = require('mongoose');
 
-const connectDB = async (retries = 5, interval = 5000) => {
-  const mongoURI = process.env.MONGO_URI;
+/**
+ * Safely sanitizes and URL-encodes user and password in MongoDB URI
+ * Prevents Mongoose "Password contains unescaped characters" errors
+ */
+const sanitizeMongoUri = (rawUri) => {
+  if (!rawUri) return rawUri;
+  const match = rawUri.match(/^(mongodb(?:\+srv)?:\/\/)([^:]+):([^@]+)@(.+)$/);
+  if (match) {
+    const [, protocol, user, pass, rest] = match;
+    const safeUser = encodeURIComponent(decodeURIComponent(user));
+    const safePass = encodeURIComponent(decodeURIComponent(pass));
+    return `${protocol}${safeUser}:${safePass}@${rest}`;
+  }
+  return rawUri;
+};
 
-  if (!mongoURI) {
+const connectDB = async (retries = 5, interval = 5000) => {
+  const rawMongoURI = process.env.MONGO_URI;
+
+  if (!rawMongoURI) {
     console.error('[DB] MONGO_URI environment variable is missing.');
     throw new Error('MONGO_URI is not defined in environment variables.');
   }
+
+  const mongoURI = sanitizeMongoUri(rawMongoURI);
 
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
