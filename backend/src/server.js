@@ -10,19 +10,19 @@ const HOST = '0.0.0.0';
 let server;
 
 const startServer = async () => {
+  // Start HTTP server immediately so health probe can connect
+  server = http.createServer(app);
+
+  server.listen(PORT, HOST, () => {
+    console.log(`[Server] Project 75 Express Backend running on http://${HOST}:${PORT}`);
+    console.log(`[Server] Environment: ${process.env.NODE_ENV || 'development'}`);
+  });
+
   try {
-    // Attempt database connection with retries
-    await connectDB();
-
-    server = http.createServer(app);
-
-    server.listen(PORT, HOST, () => {
-      console.log(`[Server] Project 75 Express Backend running on http://${HOST}:${PORT}`);
-      console.log(`[Server] Environment: ${process.env.NODE_ENV || 'development'}`);
-    });
+    // Connect to database with retries
+    await connectDB(10, 3000);
   } catch (err) {
-    console.error(`[Server] Fatal startup error: ${err.message}`);
-    process.exit(1);
+    console.error(`[Server] Fatal DB connection error: ${err.message}`);
   }
 };
 

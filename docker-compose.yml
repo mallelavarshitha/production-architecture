@@ -43,7 +43,7 @@ services:
     environment:
       PORT: 5000
       NODE_ENV: ${NODE_ENV:-production}
-      MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_USER:-appuser}:${MONGO_PASSWORD:-appSecurePass75_2026}@mongodb:27017/${MONGO_DATABASE:-taskdb}?authSource=${MONGO_DATABASE:-taskdb}}
+      MONGO_URI: ${MONGO_URI:-mongodb://${MONGO_ROOT_USER:-admin}:${MONGO_ROOT_PASSWORD:-rootSecurePass75_2026}@mongodb:27017/${MONGO_DATABASE:-taskdb}?authSource=admin}
     depends_on:
       mongodb:
         condition: service_healthy
@@ -55,10 +55,10 @@ services:
           memory: 200M
     healthcheck:
       test: ["CMD", "node", "src/healthcheck.js"]
-      interval: 15s
+      interval: 10s
       timeout: 5s
-      retries: 4
-      start_period: 15s
+      retries: 5
+      start_period: 30s
 
   # ==========================================
   # 3. React Frontend Service
