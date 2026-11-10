@@ -27,6 +27,21 @@ app.use((req, res, next) => {
 app.use('/api/health', healthRoutes);
 app.use('/api/tasks', taskRoutes);
 
+// Serve static frontend files if public folder exists (e.g. in unified container / Kubernetes)
+const path = require('path');
+const fs = require('fs');
+const publicPath = path.join(__dirname, '../public');
+
+if (fs.existsSync(publicPath)) {
+  app.use(express.static(publicPath));
+  app.get('*', (req, res, next) => {
+    if (req.originalUrl.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(publicPath, 'index.html'));
+  });
+}
+
 // Fallback handlers
 app.use(notFoundHandler);
 app.use(errorHandler);
